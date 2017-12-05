@@ -1,0 +1,402 @@
+***********************************************************************************************************GLOBAL VARIABLES**********************************************************************************************************************************************************************************************************************
+Declare int and char input variables
+Declare Books, Borrows, Members arrays
+Declare flag=1
+
+***********************************************************************************************************STRUCTURES***********************************************************************************************************
+1-Book
+	char Title[70]
+	char AuthorName[70]
+	char Publisher[70]
+	int ISBN
+	date Publication
+	int copies
+	int copies_available
+	char Category[30]
+2-Member
+	char Surname[30]
+	char LastName[30]
+	int ID
+	Address Address
+	int PhoneNumber
+	int Age
+	char Email[50]
+3-Borrow
+	int Transaction
+	int ISBN
+	int ID
+	Date Dateissued
+	Date Datedue
+	Date return_date
+4-Date
+	int Day
+	int Month
+	int Year
+5-BorrowedBook
+	int ISBN
+	int occur
+	char title[70]
+6-Address
+	int bldg
+	char street[50]
+	char city[50]
+
+
+***********************************************************************************************************FUNCTIONS***********************************************************************************************************
+1- void main()
+{
+(open all files in r mode)
+Loop to scan ALL elements in Books file and translate them to BooksArray
+Loop to scan ALL elements in Members file and translate them to MembersArray
+Loop to scan ALL elements in Borrows file and translate them to BorrowsArray
+close all files
+
+Display Today's Date
+do{
+display choices:
+	1- Book Management
+	2- Member Management
+	3- Borrow Management	
+	4- Administrative Actions
+	5- Save Changes
+	6- Exit
+prompt user for integer input1
+Call Checkint			/* Calls a function that checks if the input is an integer and displays an error message if it is not */
+If input <1 or >6
+{
+	display error message: "Please enter an integer (1-6) that corresponds to your action of choice"
+	Let flag=1
+}
+else{
+switch input1
+{
+	case 1:
+		Call BookManagement() /* Calls a function that manages books */
+	case 2:
+		Call MemberManagement() /* Calls a function that manages members */
+	case 3:
+		Call BorrowManagement() /* Calls a function that manages borrowings */
+	case 4:
+		Call AdminActions() /* Calls a function that manages administrative actions */
+	case 5:
+		Open ALL files in w mode
+		Loop to translate elements of the MembersArray back to the Members file
+		Loop to translate elements of the BooksArray back to the Books file
+		Loop to translate elements of the BorrowsArray back to the Books file
+	case 6:
+		display choices:
+			1- Save and Exit
+			2- Exit and discard changes
+			3- Get back to the main menu
+		do{
+			prompt user for integer input2
+			Call Checkint
+			If input2 <1 or >3
+			{
+				display error message: "Please enter an integer (1-6) that corresponds to your action of choice"
+				Let flag=1
+			}
+			else
+			if(input2==1){
+				Send Books, Members, Borrows arrays to their respective files  
+				Close all files
+				Let flag=0
+			}
+			else if(input2==2){
+				display warning message "Are you sure you want to discard all changes?"
+				do{
+				prompt user for char input3
+				display error message "Please enter Y or N"
+				}while(input3!= 'Y' and input3 !='N' and input3 != 'y' and input3 != 'n')
+				if input3=='n' or 'N'
+				Let flag=1
+			}
+			}while(input2>3 or input2<1 or input2 not int)
+}}
+}while(flag=1)
+}
+
+2- void BookManagement()
+{
+	display choices:
+		1- Insert a new book
+		2- Search for a book
+		3- Add new copies
+		4- Delete book
+	prompt user for input4
+	Call Checkint
+	If input4 <1 or >4
+	{
+		display error message: "Please enter an integer (1-4) that corresponds to your action of choice"
+		Let flag=1
+	}
+	else{
+	switch input4
+	{
+		case 1:
+			Call NewBook()						/* Calls a function through which a new book will be created in the Books File */
+		case 2:
+			Call SearchBook()					/* Calls a function that searches the books file for a book */
+		case 3:
+			Call AddCopies()					/* Calls a function that is used to add copies to an existing book in the books file */
+		case 4:
+			Call DeleteBook()					/* Calls a function that deletes a book's data from the books file */
+	}}
+	display message "Returning back to main menu ..."
+	Let flag=1 
+}
+
+3- void MemberManagement()
+{
+	display choices:
+		1- Register a new member
+		2- Delete an existing member
+	prompt user for input5
+	Call Checkint
+	If input5 <1 or >2
+	{
+		display error message: "Please enter an integer (1-2) that corresponds to your action of choice"
+		Let flag=1
+	else{
+	switch input5
+	{
+		case 1:
+			Call NewMember()					/* Calls a function through which a new member will be created in the members File */
+
+		case 2:
+			Call DeleteMember()					/* Calls a function that deletes a member's data from the members file */
+	}}
+	display message "Returning back to main menu ..."
+	Let flag=1	
+}
+
+4-  void Borrow()
+{
+	display choices:
+		1- Register a new borrowing transaction
+		2- Register the return of a book
+	prompt user for input6
+	Call Checkint
+	If input6 <1 or >2
+	{
+		display error message: "Please enter an integer (1-2) that corresponds to your action of choice"
+		Let flag=1
+	}
+	else{
+	switch input6
+	{
+		case 1:
+			Call Borrow()						/* Calls a function that creates a new borrowing entry in the borrow file and decrements a copy from the selected book in the books file */
+		case 2:
+			Call ReturnBorrow()					/* Calls a function that is used to add a return date */
+	}}
+	display message "Returning back to main menu ..."
+	Let flag=1	
+}		
+			
+5- void AdminActions()
+{
+	display choices:
+		1- Display Overdue Books
+		2- Register a new borrowing transaction
+	prompt user for input7
+	Call Checkint
+	If input7 <1 or >2
+	{
+		display error message: "Please enter an integer (1-2) that corresponds to your action of choice"
+		Let flag=1
+	}
+	else{
+	switch input7
+	{
+		case 1:
+			Call ODbooks()						/* Calls a function that checks in the Borrow file if today's date is later than the date due of a Borrow transaction and if the date returned is null */
+		case 2:	
+			Call PopBooks()						/* Calls a function that displays the most popular books from the borrow file */
+	}}
+	display message "Returning back to main menu ..."
+	Let flag=1	
+}
+
+6- void NewBook()
+{
+	declare counter 
+	Loop to find index of last element in BooksArray using BooksArray.ISBN, where the condition for continuation is ISBN>0
+	display message " Please enter Book Title, Author Name, Publisher Name, Date of Publication, No. of copies, No. of copies currently available and Category."
+	Scan BooksArray[Last+1].title
+	Scan BooksArray[Last+1].author
+	Scan BooksArray[Last+1].publisher
+	Scan BooksArray[Last+1].&datepublished
+	Scan BooksArray[Last+1].&copies
+	Scan BooksArray[Last+1].&copies_available
+	Scan BooksArray[Last+1].&category
+	display message "Book successfully added!"
+}
+7- void SearchBook()
+{
+	Declare SearchArray1, SearchArray2, SearchArray3
+	display choices:
+		1- Specific Search by ISBN
+		2- Search by Title, Author and/or Category
+	prompt user for integer input8
+		If input8 <1 or >2
+	{
+		display error message: "Please enter an integer (1-2) that corresponds to your action of choice"
+		Let flag=1
+	else{
+	switch input8
+	{
+		case 1:
+			display message: "Enter ISBN"
+			prompt user for ISBN
+			CheckISBN()
+			Loop to search BooksArray for specific ISBN index
+			use ISBN index found to display Book Title, author, Category
+
+		case 2:
+			display message: "Enter Book title, author name and/or category"
+			Scan BookTitle
+			Scan AuthorName
+			Scan Category
+			Loop to search BooksArray for Category using strcmp, and translates elements with correct category to SearchArray1. If not provided, translate all elements.
+			Loop to search SearchArray1 for BookTitle using strstr. If strstr doesnt return \0, translate the element to SearchArray2. If not provided, translate all elements.
+			Loop to search Searcharray2 for AuthorName using strcmp and translate elements with correct AuthorName to SearchArray3. If not provided, translate all elements.
+			display message: " Search Results:"
+			Loop to print all elements in SearchArray3
+	}}
+}
+8- void AddCopies()
+{
+	display message: "Enter Book ISBN"
+	prompt user for integer ISBN
+	CheckISBN(ISBN)
+	Loop to search BooksArray for specific ISBN index
+	if found, display message: "Enter number of copies to be added"
+	prompt user for integer input9
+	Checkint(input9)
+	if not found, display message: "ISBN not found."
+	Using said index, BooksArray[counter].&copies+= number of copies,BooksArray[counter].&copies_available+= number of copies
+	display message: "Copies added successfully!"
+}
+9- void DeleteBook()
+{
+	prompt user for integer ISBN
+	CheckISBN(ISBN)
+	Loop to find said ISBN's index in BooksArray
+	Loop to make BooksArray[index]=BooksArray[index+1] from the start of i till the end of the array
+}
+10- void NewMember()
+{
+	Loop to find index of last element in MembersArray using MembersArray.ID, where the condition for continuation is ID>0
+	display message: "Please enter Surname, Last Name, ID, Address(Bldg no, Street, City),Phone Number, Age, Email
+	Scan MembersArray[Last+1].Surname
+	Scan MembersArray[Last+1].LastName
+	Scan MembersArray[Last+1].ID
+	CheckID(ID)
+	Scan MembersArray[Last+1].Address
+		Scan MembersArray[Last+1].Address.Bldg
+		Scan MembersArray[Last+1].Address.Street
+		Scan MembersArray[Last+1].Address.City
+	Scan MembersArray[Last+1].&PhoneNumber
+	CheckPhone(PhoneNumber)
+	Scan MembersArray[Last+1].&Age
+	Checkint(Age)
+	Scan MembersArray[Last+1].Email
+}
+11- void DeleteMember()
+{
+	prompt user for integer ID
+	CheckID(ID)
+	Loop to find said ID's index in MembersArray
+	Loop to make MembersArray[index]=MembersArray[index+1] from the start of i till the end of the array
+}
+12- void Borrow()
+{
+	Loop to find last element in BorrowsArray using ISBN, where the condition for continuation is ISBN>0
+	display message "Please enter User ID, Book's ISBN"
+	prompt user for integer ID
+	CheckID(ID)
+	prompt user for integer ISBN
+	CheckISBN(ISBN)
+	Loop to search BooksArray for said ISBN's index
+	if not found display message "Book not found" and Borrow()
+	Loop to search MembersArray for said ID's index
+	if not found display message "The Provided Member ID is not registered in the system" and Borrow()
+	Loop to search BorrowsArray for Member's ID with a flag incrementing every time an entry is found.
+	If flag1=<3 then display message "This member has already borrowed 3 books."
+	Decrement BooksArray[Booksindex].copies_available
+	BorrowsArray[Borrowsindex+1].ISBN = BooksArray[Booksindex].ISBN
+	BorrowsArray[Borrowsindex+1].ID = MembersArray[Membersindex].ID
+	prompt user for date BorrowsArray[Borrowsindex+1].Dateissued.Day
+	prompt user for date BorrowsArray[Borrowsindex+1].Dateissued.Month
+	prompt user for date BorrowsArray[Borrowsindex+1].Dateissued.Year
+	CheckDate(Dateissued)
+	prompt user for date BorrowsArray[Borrowsindex+1].Datedue.Day
+	prompt user for date BorrowsArray[Borrowsindex+1].Datedue.Month
+	prompt user for date BorrowsArray[Borrowsindex+1].Datedue.Year
+	Check Datedue is not less than Dateissued
+	prompt user for integer BorrowsArray[Borrowsindex+1].Transaction
+	
+}
+13- void ReturnBorrow()
+{
+	prompt user for Transaction
+	Loop to search BorrowsArray for Transaction and its index
+	Using 
+	prompt user for date BorrowsArray[index].return_date
+	CheckDate(BorrowsArray[index].return_date)
+}	
+14- void ODbooks()
+{
+	Loop to Search BorrowsArray for Datedue and compare it with Today_date() where the condition for continuation is Datedue.Year>0. 
+	If a date is found to be more than Today_date() value, print BorrowsArray[index].Transaction, BorrowsArray[index].ID,BorrowsArray[index].ISBN, BorrowsArray[index].Datedue
+}
+15- void PopBooks()
+{
+	Declare BorrowedBook SearchArray
+	Nested loop in which BorrowsArray[i].ISBN is started with, where i starts at 0 and is incrementing. It is compared against ALL elements in BorrowsArray.ISBN. If a duplicate is found, flag++. Flag is equated to zero when there are no more elements to compare to.
+	In said loop, SearchArray[i].ISBN = BorrowsArray.ISBN and SearchArray.occur = flag
+	Loop to sort SearchArray according to SearchArray.occur descendingly
+	Nested Loop to search for Book titles in BooksArray using SearchArray.ISBN. If book is found, SearchArray[i].title=BooksArray[j].title
+	Loop to print first 5 elements in SearchArray.ISBN 
+}	
+
+16- int CheckID(int ID)
+{	
+	If ID/10000!=0 or ID<1000 or isint(ID)==0 , display error message "Please enter a legitimate ID number! ID numbers start from 1001 and end at 9999.", return 1
+	else return 0
+}	
+17- int CheckISBN(int ISBN)
+{
+	If ISBN/10000000000000!=0 or ISBN/1000000000000==0 or isint(ISBN)=0, display error message "Please enter a legitimate ISBN! ISBNs are 13 digits long.", return 1
+	else 
+	return 0
+}
+18- int Checkint(int n)
+{
+	if isint(n)=0, display error message "Please enter an integer!"
+	return 1
+	else if n<0
+	"Please enter an integer bigger than ZERO!"
+	return 1
+	else
+	return 0
+}
+	
+19-int CheckDate(Date n)
+{
+	if n.Month>12 or n.Month<=0 display error message "Month must be a value between 1 and 12!"
+	if n.Day>31 or n.day<0 display error message "Day must be a value between 1 and 31!"
+	if n.Year>today_date.Year
+	display error message: "Date entered can't be after today's date!"
+	else if n.Year=today_date.Year and n.Month>today_date.Month
+	display error message: "Date entered can't be after today's date!"
+	else if n.Year=today_date.Year and n.Month>today_date.Month and n.day>today_date.day
+	display error message: "Date entered can't be after today's date!"
+}
+20-int CheckPhone(int phone)
+{
+	if phone/10000000!=0 or phone/1000000==0, display error message "Please enter a legitimate Phone Number! Phone numbers are 7 digits long.",return 1
+	else
+	return 0 
+}
